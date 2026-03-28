@@ -196,3 +196,51 @@ footer {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
+@media (max-width: 768px){
+    .gallary {
+        grid-template-columns: repeat(2,1fr);
+
+    }
+
+    .item-featured{
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    .item-tall{
+        grid-row: span 1;
+    }
+    .magzine{
+        grid-template-columns: 1fr;
+    }
+     .mag-main{
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+@media (max-width: 480px){
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .gallery-section, .magzine-section {
+        padding: 40px 20px;
+    }
+
+    .gallery-item {
+        padding: 20px 10px;
+        font-size: 0.9rem;
+    }
+
+    .item-featured {
+        font-size: 1.5rem;
+    }
+
+    .mag-main {
+        padding: 20px;
+    }
+
+    .mag-main h3 {
+        font-size: 1.5rem;
+    }
+}
