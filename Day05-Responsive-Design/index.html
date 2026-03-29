@@ -9,6 +9,11 @@
 <body>
   <nav>
     <div class="logo">KØBX Dev</div>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
       <li><a href="#">About</a></li>
@@ -68,5 +73,14 @@
     </footer>
 
 
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+
+  hamburger.addEventListener('click', function() {
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+  });
+</script>
 </body>
 </html>
