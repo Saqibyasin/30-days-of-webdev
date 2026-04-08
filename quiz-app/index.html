@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!--
+    LESSON: viewport meta tag makes your site mobile-responsive.
+    Without it, mobile browsers zoom out to show the desktop version.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebDev Quiz — Day 15</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!--
+    LESSON: We have 5 "screens" but only show one at a time.
+    JavaScript adds/removes the 'active' class to control which is visible.
+    This is a common Single Page App (SPA) pattern — no page reloads!
+  -->
+
+  <div class="app">
+
+    <!-- ══════════════════════════════════════════
+         SCREEN 1: WELCOME
+         ══════════════════════════════════════════ -->
+    <div id="screen-welcome" class="screen">
+      <div class="card">
+
+        <div class="welcome-header">
+          <span class="logo">⚡</span>
+          <h1>WebDev Quiz</h1>
+          <p>Day 15 of 30 · Test your knowledge</p>
+          <!--
+            LESSON: This span is empty — JS fills it with localStorage data.
+            id="best-score" lets JS target it via getElementById().
+          -->
+          <span class="best-score" id="best-score">Loading...</span>
+        </div>
+
+        <p class="section-label">Choose a category</p>
+
+        <!--
+          LESSON: data-category is a custom data attribute.
+          JS reads it with: card.dataset.category
+          This avoids hard-coding category names in JS — the HTML drives the data.
+        -->
+        <div class="categories-grid">
+          <div class="category-card" data-category="html">
+            <span class="cat-icon">🏗️</span>
+            <div class="cat-name">HTML</div>
+            <div class="cat-count">6 questions · Structure</div>
+          </div>
+          <div class="category-card" data-category="css">
+            <span class="cat-icon">🎨</span>
+            <div class="cat-name">CSS</div>
+            <div class="cat-count">6 questions · Styling</div>
+          </div>
+          <div class="category-card" data-category="javascript">
+            <span class="cat-icon">⚙️</span>
+            <div class="cat-name">JavaScript</div>
+            <div class="cat-count">6 questions · Logic</div>
+          </div>
+          <div class="category-card" data-category="general">
+            <span class="cat-icon">🌐</span>
+            <div class="cat-name">General Web</div>
+            <div class="cat-count">6 questions · Concepts</div>
+          </div>
+        </div>
+
+        <!--
+          LESSON: disabled attribute prevents clicking.
+          JS removes it once a category is selected.
+        -->
+        <button class="btn btn-primary" id="btn-start" disabled>
+          Select a category to start
+        </button>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         SCREEN 2: QUIZ
+         ══════════════════════════════════════════ -->
+    <div id="screen-quiz" class="screen">
+      <div class="card">
+
+        <!-- Top bar: category, question number, XP, streak -->
+        <div class="quiz-header">
+          <span class="category-badge" id="category-badge">HTML</span>
+          <span class="question-number" id="question-number">Q1 of 6</span>
+          <div class="xp-streak">
+            <span class="xp-display" id="xp-display">0 XP</span>
+            <span class="streak-display" id="streak-display">🔥 0</span>
+          </div>
+        </div>
+
+        <!-- Progress bar showing how far through the quiz you are -->
+        <div class="progress-track">
+          <!--
+            LESSON: style="width: 0%" is set here as a starting value.
+            JS updates it: progressBar.style.width = `${pct}%`
+          -->
+          <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <p class="progress-text" id="progress-text">0/6</p>
+
+        <!-- Timer: number + colour-changing bar -->
+        <div class="timer-row">
+          <span class="timer-number" id="timer-display">15</span>
+          <div class="timer-track">
+            <div class="timer-bar-fill" id="timer-bar" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <!-- The actual question -->
+        <p class="question-text" id="question-text">Loading question...</p>
+
+        <!--
+          LESSON: This div is empty — JS builds the buttons here dynamically.
+          document.createElement('button') + appendChild() adds each option.
+          This is much better than hard-coding buttons and swapping their text.
+        -->
+        <div class="options-grid" id="options-grid">
+          <!-- option buttons injected by JS -->
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         SCREEN 3: FEEDBACK (after each answer)
+         ══════════════════════════════════════════ -->
+    <div id="screen-feedback" class="screen">
+      <div class="card feedback-card">
+
+        <!-- Icon: ✓ or ✗ — JS sets class 'correct' or 'wrong' -->
+        <div class="feedback-icon" id="feedback-icon">✓</div>
+
+        <h2 class="feedback-title" id="feedback-title">Correct!</h2>
+        <p class="feedback-xp earned" id="feedback-xp">+150 XP</p>
+
+        <!-- Explanation block — this is WHERE THE LEARNING HAPPENS -->
+        <div class="feedback-explanation">
+          <div class="explanation-label">💡 Why?</div>
+          <p id="feedback-explain">Explanation goes here.</p>
+        </div>
+
+        <button class="btn btn-primary" id="btn-next">Next Question →</button>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         SCREEN 4: RESULTS
+         ══════════════════════════════════════════ -->
+    <div id="screen-results" class="screen">
+      <div class="card">
+
+        <div class="results-header">
+          <h2>Quiz Complete!</h2>
+
+          <!--
+            LESSON: SVG (Scalable Vector Graphics) is drawn with code.
+            The circle animates via stroke-dashoffset — JS calculates the offset
+            based on your score percentage. This is a common data viz technique.
+          -->
+          <div class="score-circle-wrap">
+            <svg class="score-svg" viewBox="0 0 120 120">
+              <!-- Background circle (grey track) -->
+              <circle class="score-track" cx="60" cy="60" r="54"/>
+              <!-- Foreground circle (animated fill) -->
+              <circle id="result-circle" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="score-label">
+              <span id="result-score">0%</span>
+              <span style="font-size:12px; color: var(--text-muted);">score</span>
+            </div>
+          </div>
+
+          <p class="result-message" id="result-message"></p>
+        </div>
+
+        <!-- 4-stat summary grid -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-val" id="result-xp">0</span>
+            <span class="stat-label">XP earned</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="result-correct">0/6</span>
+            <span class="stat-label">Correct</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="result-time">0s</span>
+            <span class="stat-label">Avg time</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="result-streak">0</span>
+            <span class="stat-label">Best streak</span>
+          </div>
+        </div>
+
+        <!-- Save to leaderboard -->
+        <div class="save-score-row">
+          <input
+            type="text"
+            id="player-name"
+            placeholder="Your name (optional)"
+            maxlength="20"
+          />
+          <button class="btn btn-outline" id="btn-save" style="width: auto; padding: 12px 16px;">
+            Save
+          </button>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="results-actions">
+          <button class="btn btn-secondary" id="btn-leaderboard">🏆 Scores</button>
+          <button class="btn btn-primary"   id="btn-restart">Play Again</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         SCREEN 5: LEADERBOARD
+         ══════════════════════════════════════════ -->
+    <div id="screen-leaderboard" class="screen">
+      <div class="card">
+
+        <div class="leaderboard-header">
+          <h2>🏆 Leaderboard</h2>
+          <button class="btn btn-secondary" id="btn-back" style="width: auto; padding: 8px 16px; font-size: 13px;">
+            ← Back
+          </button>
+        </div>
+
+        <!--
+          LESSON: This div is empty — JS builds the rows here from localStorage data.
+          Each score entry is a div with class lb-row, created in script.js.
+        -->
+        <div class="lb-list" id="leaderboard-list">
+          <!-- rows injected by JS -->
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /.app -->
+
+
+  <!--
+    LESSON: Script tags go at the BOTTOM of <body>.
+    This ensures the HTML is parsed before JS tries to find elements.
+    (Or use DOMContentLoaded event listener, which we also do in script.js.)
+
+    Order matters: questions.js must load BEFORE script.js
+    because script.js uses the QUESTIONS variable defined in questions.js.
+  -->
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>

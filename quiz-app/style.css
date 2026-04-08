@@ -1,0 +1,683 @@
+/* ============================================================
+   style.css — All visual styling lives here
+
+   WHAT YOU'LL LEARN:
+   ✅ CSS custom properties (variables)
+   ✅ Flexbox layout
+   ✅ CSS animations & transitions
+   ✅ Pseudo-classes (:hover, :disabled)
+   ✅ Media queries
+   ✅ CSS selectors
+   ============================================================ */
+
+
+/* ── 1. CSS VARIABLES ────────────────────────────────────────
+   LESSON: Variables (--name) let you define a value ONCE
+   and reuse it everywhere. Change one line = changes the whole theme. */
+
+:root {
+  /* Color palette */
+  --bg-primary:    #0f1117;
+  --bg-card:       #1a1d2e;
+  --bg-elevated:   #232640;
+  --accent:        #7c6ff7;
+  --accent-dim:    #7c6ff722;
+  --accent-border: #7c6ff744;
+  --green:         #22c55e;
+  --green-dim:     #22c55e22;
+  --red:           #ef4444;
+  --red-dim:       #ef444422;
+  --amber:         #f59e0b;
+  --amber-dim:     #f59e0b22;
+  --text-primary:  #e8e6f0;
+  --text-muted:    #8b87a8;
+  --text-faint:    #4a4766;
+  --border:        #2a2d45;
+
+  /* Spacing */
+  --gap-sm:  8px;
+  --gap-md:  16px;
+  --gap-lg:  24px;
+
+  /* Radius */
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  18px;
+
+  /* Timer colors used in JS via classList */
+  --timer-safe:    var(--green);
+  --timer-warn:    var(--amber);
+  --timer-danger:  var(--red);
+}
+
+
+/* ── 2. RESET & BASE ─────────────────────────────────────────
+   LESSON: Browsers add default margin/padding. We reset first
+   so every element behaves consistently across browsers. */
+
+*, *::before, *::after {
+  box-sizing: border-box;   /* width includes padding+border */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  /* LESSON: flexbox centers the .app vertically and horizontally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-md);
+
+  /* Subtle grid pattern background */
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+
+/* ── 3. LAYOUT — SCREENS ─────────────────────────────────────
+   LESSON: We show one screen at a time using display: none / block.
+   Adding class 'active' makes a screen visible. */
+
+.app {
+  width: 100%;
+  max-width: 520px;
+}
+
+.screen {
+  display: none;   /* Hidden by default */
+  animation: fadeIn 0.25s ease;
+}
+
+.screen.active {
+  display: block;  /* Shown when JS adds 'active' class */
+}
+
+/* LESSON: @keyframes defines an animation sequence */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ── 4. CARDS ────────────────────────────────────────────────*/
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--gap-lg);
+}
+
+
+/* ── 5. WELCOME SCREEN ───────────────────────────────────────*/
+
+.welcome-header {
+  text-align: center;
+  margin-bottom: var(--gap-lg);
+}
+
+.welcome-header .logo {
+  font-size: 40px;
+  margin-bottom: var(--gap-sm);
+}
+
+.welcome-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.welcome-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.best-score {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  padding: 2px 10px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--gap-sm);
+}
+
+/* LESSON: CSS Grid with auto-fit creates responsive columns */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-md);
+}
+
+.category-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--gap-md);
+  cursor: pointer;
+  /* LESSON: transition animates changes smoothly */
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  text-align: left;
+}
+
+/* LESSON: :hover pseudo-class applies when mouse is over element */
+.category-card:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+/* LESSON: This targets .category-card elements that ALSO have .selected */
+.category-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.category-card .cat-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.category-card .cat-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.category-card .cat-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+
+/* ── 6. BUTTONS ──────────────────────────────────────────────*/
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r-md);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* LESSON: :disabled pseudo-class styles disabled buttons */
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+}
+
+
+/* ── 7. QUIZ SCREEN ──────────────────────────────────────────*/
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap-md);
+  gap: var(--gap-sm);
+}
+
+.category-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.question-number {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* XP and streak display */
+.xp-streak {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.xp-display,
+.streak-display {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* Progress bar */
+.progress-track {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-align: right;
+  margin-bottom: var(--gap-md);
+}
+
+/* Timer */
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-lg);
+}
+
+.timer-number {
+  font-size: 22px;
+  font-weight: 700;
+  min-width: 32px;
+  color: var(--green);
+  transition: color 0.3s;
+}
+
+/* LESSON: The .pulse animation is toggled by JS when time is low */
+.timer-number.pulse {
+  animation: timerPulse 0.5s ease infinite alternate;
+}
+
+@keyframes timerPulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.15); }
+}
+
+.timer-track {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timer-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+  transition: width 0.9s linear, background 0.3s;
+}
+
+/* LESSON: Modifier classes change the timer color */
+.timer-bar-fill.warning {
+  background: var(--amber);
+}
+
+.timer-bar-fill.danger {
+  background: var(--red);
+}
+
+/* Question */
+.question-text {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: var(--gap-lg);
+  min-height: 60px;
+}
+
+/* Options */
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.option-btn {
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  line-height: 1.4;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+  transform: translateX(4px);
+}
+
+/* Correct/wrong states added by JS after answering */
+.option-btn.correct {
+  background: var(--green-dim);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.option-btn.wrong {
+  background: var(--red-dim);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.option-btn:disabled {
+  cursor: default;
+  transform: none;
+}
+
+
+/* ── 8. FEEDBACK SCREEN ──────────────────────────────────────*/
+
+.feedback-card {
+  text-align: center;
+}
+
+.feedback-icon {
+  font-size: 48px;
+  font-weight: 700;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--gap-md);
+}
+
+.feedback-icon.correct {
+  color: var(--green);
+  background: var(--green-dim);
+  border: 2px solid var(--green);
+}
+
+.feedback-icon.wrong {
+  color: var(--red);
+  background: var(--red-dim);
+  border: 2px solid var(--red);
+}
+
+.feedback-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.feedback-xp {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: var(--gap-md);
+}
+
+.feedback-xp.earned { color: var(--accent); }
+.feedback-xp.zero   { color: var(--text-faint); }
+
+.feedback-explanation {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--gap-md);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  text-align: left;
+  margin-bottom: var(--gap-md);
+}
+
+.explanation-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+
+/* ── 9. RESULTS SCREEN ───────────────────────────────────────*/
+
+.results-header {
+  text-align: center;
+  margin-bottom: var(--gap-lg);
+}
+
+.results-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* SVG score circle */
+.score-circle-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto var(--gap-md);
+}
+
+.score-svg {
+  transform: rotate(-90deg);
+  width: 140px;
+  height: 140px;
+}
+
+.score-track { fill: none; stroke: var(--border); stroke-width: 8; }
+
+#result-circle {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  /* LESSON: CSS transition animates the stroke-dashoffset change */
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.score-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.score-label #result-score {
+  font-size: 28px;
+  font-weight: 700;
+  display: block;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-md);
+}
+
+.stat-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--gap-md);
+  text-align: center;
+}
+
+.stat-box .stat-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  display: block;
+}
+
+.stat-box .stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.result-message {
+  font-size: 15px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: var(--gap-md);
+}
+
+/* Name input for leaderboard */
+.save-score-row {
+  display: flex;
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-md);
+}
+
+.save-score-row input {
+  flex: 1;
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.save-score-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.save-score-row input::placeholder {
+  color: var(--text-faint);
+}
+
+.results-actions {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.results-actions .btn {
+  flex: 1;
+}
+
+
+/* ── 10. LEADERBOARD SCREEN ──────────────────────────────────*/
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap-lg);
+}
+
+.leaderboard-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--gap-lg);
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: 12px var(--gap-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+}
+
+.lb-row.top-three {
+  border-color: var(--accent-border);
+}
+
+.lb-rank  { min-width: 28px; font-size: 16px; }
+.lb-name  { flex: 1; font-weight: 600; }
+.lb-cat   { color: var(--text-muted); font-size: 12px; }
+.lb-xp    { font-weight: 700; color: var(--accent); }
+.lb-date  { font-size: 11px; color: var(--text-faint); margin-left: 4px; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-faint);
+  padding: var(--gap-lg);
+  font-size: 14px;
+}
+
+
+/* ── 11. RESPONSIVE ──────────────────────────────────────────
+   LESSON: @media queries apply styles only at certain screen sizes */
+
+@media (max-width: 420px) {
+  body { padding: var(--gap-sm); }
+  .card { padding: var(--gap-md); }
+  .question-text { font-size: 16px; }
+  .welcome-header h1 { font-size: 22px; }
+  .lb-date { display: none; }  /* Hide date on very small screens */
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Dev Quiz ⚡</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="screen active">
+            <div class="start-card">
+                <div class="start-icon">⚡</div>
+                <h1>Web Dev Quiz</h1>
+                <p>Test your web development knowledge!</p>
+                <div class="start-stats">
+                    <div class="start-stat">
+                        <span>10</span>
+                        <p>Questions</p>
+                    </div>
+                    <div class="start-stat">
+                        <span>30s</span>
+                        <p>Per Question</p>
+                    </div>
+                    <div class="start-stat">
+                        <span>4</span>
+                        <p>Options</p>
+                    </div>
+                </div>
+                <button id="start-btn">Start Quiz →</button>
+            </div>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen">
+
+            <!-- TOP BAR -->
+            <div class="quiz-topbar">
+                <span id="question-count">Question 1 of 10</span>
+                <span id="timer" class="timer">30s</span>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+
+            <!-- QUESTION CARD -->
+            <div class="question-card">
+                <p id="question-text">Question goes here</p>
+
+                <div id="options-container" class="options-container"></div>
+
+                <div id="feedback" class="feedback hidden"></div>
+
+                <button id="next-btn" class="next-btn hidden">
+                    Next Question →
+                </button>
+            </div>
+
+            <!-- STATS BAR -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span id="stat-question">1</span>
+                    <p>Question</p>
+                </div>
+                <div class="stat-item correct">
+                    <span id="stat-correct">0</span>
+                    <p>Correct</p>
+                </div>
+                <div class="stat-item wrong">
+                    <span id="stat-wrong">0</span>
+                    <p>Wrong</p>
+                </div>
+                <div class="stat-item">
+                    <span id="stat-time">30s</span>
+                    <p>Time</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="results-screen" class="screen">
+            <div class="results-card">
+                <div id="results-emoji" class="results-emoji">🎉</div>
+                <h2 id="results-title">Quiz Complete!</h2>
+                <div class="results-score">
+                    <span id="score-fraction">8/10</span>
+                    <span id="score-percent">80%</span>
+                </div>
+                <div id="grade-badge" class="grade-badge">B</div>
+                <div class="results-stats">
+                    <div class="result-stat">
+                        <span id="res-correct">8</span>
+                        <p>Correct</p>
+                    </div>
+                    <div class="result-stat">
+                        <span id="res-wrong">2</span>
+                        <p>Wrong</p>
+                    </div>
+                    <div class="result-stat">
+                        <span id="res-time">3:42</span>
+                        <p>Time Taken</p>
+                    </div>
+                </div>
+                <div class="results-buttons">
+                    <button id="review-btn">Review Answers</button>
+                    <button id="restart-btn">Try Again →</button>
+                </div>
+            </div>
+
+            <!-- REVIEW SECTION -->
+            <div id="review-section" class="review-section hidden">
+                <h3>Answer Review</h3>
+                <div id="review-list"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
