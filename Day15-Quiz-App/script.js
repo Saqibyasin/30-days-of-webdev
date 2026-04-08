@@ -107,6 +107,17 @@ const reviewSection = document.querySelector('#review-section');
 const reviewList = document.querySelector('#review-list');
 
 
+let currentQuestion = 0;
+let score = 0;
+let wrongAnswers = 0;
+let timerInterval = null;
+let timeLeft = 30;
+let totalTime = 0;
+let userAnswers = [];
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+
+
 function showScreen(screen){
     startScreen.classList.remove('active');
     quizScreen.classList.remove('active');
@@ -114,7 +125,51 @@ function showScreen(screen){
     screen.classList.add('active');
 }
 
+function startTimer(){
+    clearInterval(timerInterval);
+    timeLeft = 30;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      totalTime++;
+      updateTimerDisplay();
+
+      if(timeLeft <= 0){
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timeOut();
+      }
+    },1000)
+}
+
+function updateTimerDisplay(){
+  timerEl.textContent = `${timeLeft}s`;
+  statTime.textContent = `${timeLeft}s`;
+  timerEl.classList.remove('danger','warning');
+  if(timeLeft <= 5){
+    timerEl.classList.add('danger');
+  }
+  else if(timeLeft <= 10){
+    timerEl.classList.add('warning');
+  }
+  
+}
+
+function timeOut(){
+  wrongAnswers++;
+  statWrong.textContent = wrongAnswers;
+}
+
 startBtn.addEventListener('click',()=>{
     showScreen(quizScreen);
-
-})
+    userAnswers.push({question : currentQuestion,
+        selected: -1,
+        correct: false
+    }
+    );
+    showFeedback(false,"Time's up! ⏰",questions[currentQuestion].explanation);
+    disableOptions();
+    highLightCorrect();
+    nextBtn.classList.remove('hidden');
+});
