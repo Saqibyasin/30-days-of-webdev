@@ -159,17 +159,119 @@ function updateTimerDisplay(){
 function timeOut(){
   wrongAnswers++;
   statWrong.textContent = wrongAnswers;
-}
-
-startBtn.addEventListener('click',()=>{
-    showScreen(quizScreen);
-    userAnswers.push({question : currentQuestion,
+   userAnswers.push({
+    question : currentQuestion,
         selected: -1,
         correct: false
-    }
-    );
+    });
     showFeedback(false,"Time's up! ⏰",questions[currentQuestion].explanation);
     disableOptions();
     highLightCorrect();
     nextBtn.classList.remove('hidden');
+}
+
+function renderQuestion(){
+  const q = quetions[currentQuestion];
+  questionCount.textContent = `Question {currentQuestion + 1} of ${questions.length}`
+  statQuestion.textContent = currentQuestion + 1;
+  questionText.textContent = q.question;
+
+  progressFill.Style.width = `${currentQuestion}/${questions.length} * 100%`;
+
+  optionsContainer.innerHTML = "";
+  feedback.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+
+  q.options.forEach((option,index)=>{
+      const div = document.createElement('div');
+      div.classList.add('option');
+      div.innerHTML =`
+      <div class="option-letter">${LETTERS[index]}</div>
+      <span class="option-text">${option}</span>
+      <span class="option-icon">${index === q.correct ? '✓' : '✗'}</span>
+      `
+    div.addEventListener('click', function(){
+      selectAnswer(index);
+    });
+    optionsContainer.appendChild(div);
+  }) ;
+    startTimer();
+}
+
+function selectAnswer(selectedIndex){
+      clearInterval(timerInterval);
+      disableOptions();
+      const q = questions[currentQuestion];
+      const isCorrect = selectedIndex === q.correct;
+      const options = document.querySelectorAll('.option');
+
+      if(isCorrect){
+        options[selectedIndex].classList.add('correct');
+        score++;
+        statCorrect.textContent = score;
+        showFeedback(true, '✅ Correct!', q.explanation);
+
+      }else{
+        options[selectedIndex].classList.add('wrong');
+        wrongAnswers++;
+        statWrong.textContent = wrongAnswers;
+        showFeedback(false, '❌ Wrong!', q.explanation)
+      }
+
+      userAnswers.push({
+        question: currentQuestion,
+        selected: selectedIndex,
+        correct : isCorrect
+      })
+      nextBtn.classList.remove('hidden');
+}
+
+function disableOptions(){
+  optionsContainer.querySelectorAll('.option').forEach((opt)=>{
+    opt.classList.add('disabled');
+  })
+
+}
+
+function highlightCorrect(){
+  const options = optionsContainer.querySelectorAll('.option');
+  options[questions[currentQuestion].correct].classList.add('correct');
+}
+function showFeedback(isCorrect, title, explanation){
+  feedback.classList.remove('correct','strong','wrong');
+  feedback.classList.add(isCorrect? 'correct' : 'wrong');
+  feedback.textContent = `${title} ${explanation}`;
+
+}
+
+function nextQuestion(){
+  currentQuestion++;
+  if(currentQuestion >= questions.length ){
+    showResults();
+
+  }
+  else{
+    renderQuestion();
+  }
+}
+
+
+
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  wrongAnswers = 0;
+  totalTime = 0;
+  userAnswers = [];
+  statCorrect.textContent = 0;
+  statWrong.textContent = 0;
+  reviewSection.classList.add('hidden');
+  reviewBtn.textContent = 'Review Answers';
+  reviewBtn.onclick = showReview;
+  showScreen(quizScreen);
+  renderQuestion();
+}
+startBtn.addEventListener('click',()=>{
+    showScreen(quizScreen);
+   
 });
