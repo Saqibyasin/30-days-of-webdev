@@ -1,0 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --accent: #38bdf8;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: #334155;
+  --success: #4ade80;
+  --danger: #f87171;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.app {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ========================
+   HEADER
+   ======================== */
+.app-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+.app-header p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ========================
+   SEARCH
+   ======================== */
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.search-box input {
+  flex: 1;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  border-color: var(--accent);
+}
+
+.search-box input::placeholder {
+  color: var(--muted);
+}
+
+.search-box button {
+  background-color: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-box button:hover {
+  background-color: #7dd3fc;
+  transform: scale(1.05);
+}
+
+.error-msg {
+  background-color: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: var(--danger);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* ========================
+   LOADING
+   ======================== */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ========================
+   WEATHER CARD
+   ======================== */
+.weather-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 16px;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CITY INFO */
+.city-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+#city-name {
+  font-size: 1.8rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+#city-country {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.weather-icon {
+  font-size: 3rem;
+}
+
+/* TEMPERATURE */
+.temp-section {
+  text-align: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.temp-main {
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.temp-desc {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+.temp-feels {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* WEATHER DETAILS */
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  background-color: var(--surface2);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.detail-icon {
+  font-size: 1.3rem;
+}
+
+.detail-value {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* MIN MAX */
+.min-max {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  background-color: var(--surface2);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.min-max-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.min-max-item span:first-child {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.min-max-item span:last-child {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.divider {
+  width: 1px;
+  height: 30px;
+  background-color: var(--border);
+}
+
+/* ========================
+   SEARCH HISTORY
+   ======================== */
+.history-section {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.history-section h3 {
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-item {
+  background-color: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.history-item:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

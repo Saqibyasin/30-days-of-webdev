@@ -255,7 +255,49 @@ function nextQuestion(){
   }
 }
 
+function showResults(){
+  clearInterval(timerInterval);
+  showScreen(resultsScreen);
 
+  const percent = Math.round((score/questions.length)*100);
+  const minutes = Math.floor(totalTime/60);
+  const seconds = totalTime % 60;
+  const timeString = `${minutes}:${seconds.toString().padStart(2,'0')} `;
+
+  document.querySelector('#score-fraction').textContent = `${score}/${questions.length}`;
+  document.querySelector('#score-percent').textContent = `${percent}%`;
+  document.querySelector('#res-correct').textContent = score;
+  document.querySelector('#res-wrong').textContent = wrongAnswers;
+  document.querySelector('#res-time').textContent = timeString;
+
+
+  const gradeBadge = document.querySelector('#grade-badge');
+  const resultsEmoji = document.querySelector('#results-emoji');
+  const resultsTitle = document.querySelector('#results-title');
+
+    if (percent >= 90) {
+    gradeBadge.textContent = 'A';
+    resultsEmoji.textContent = '🏆';
+    resultsTitle.textContent = 'Outstanding!';
+  } else if (percent >= 80) {
+    gradeBadge.textContent = 'B';
+    resultsEmoji.textContent = '🎉';
+    resultsTitle.textContent = 'Great Job!';
+  } else if (percent >= 70) {
+    gradeBadge.textContent = 'C';
+    resultsEmoji.textContent = '👍';
+    resultsTitle.textContent = 'Good Effort!';
+  } else if (percent >= 60) {
+    gradeBadge.textContent = 'D';
+    resultsEmoji.textContent = '😐';
+    resultsTitle.textContent = 'Keep Practicing!';
+  } else {
+    gradeBadge.textContent = 'F';
+    resultsEmoji.textContent = '📚';
+    resultsTitle.textContent = 'Keep Studying!';
+  }
+
+}
 
 function restartQuiz() {
   currentQuestion = 0;
