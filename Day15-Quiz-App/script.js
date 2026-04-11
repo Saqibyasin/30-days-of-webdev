@@ -1,3 +1,7 @@
+// ========================
+// QUESTIONS DATA
+// ========================
+
 const questions = [
   {
     question: "What does HTML stand for?",
@@ -86,6 +90,23 @@ const questions = [
   }
 ];
 
+// ========================
+// GAME STATE
+// ========================
+
+let currentQuestion = 0;
+let score = 0;
+let wrongAnswers = 0;
+let timerInterval = null;
+let timeLeft = 30;
+let totalTime = 0;
+let userAnswers = [];
+const LETTERS = ['A', 'B', 'C', 'D'];
+
+// ========================
+// GET ELEMENTS
+// ========================
+
 const startScreen = document.querySelector('#start-screen');
 const quizScreen = document.querySelector('#quiz-screen');
 const resultsScreen = document.querySelector('#results-screen');
@@ -106,163 +127,171 @@ const statWrong = document.querySelector('#stat-wrong');
 const reviewSection = document.querySelector('#review-section');
 const reviewList = document.querySelector('#review-list');
 
+// ========================
+// SCREEN SWITCHING
+// ========================
 
-let currentQuestion = 0;
-let score = 0;
-let wrongAnswers = 0;
-let timerInterval = null;
-let timeLeft = 30;
-let totalTime = 0;
-let userAnswers = [];
-const LETTERS = ['A', 'B', 'C', 'D'];
-
-
-
-function showScreen(screen){
-    startScreen.classList.remove('active');
-    quizScreen.classList.remove('active');
-    resultsScreen.classList.remove('active');
-    screen.classList.add('active');
+function showScreen(screen) {
+  startScreen.classList.remove('active');
+  quizScreen.classList.remove('active');
+  resultsScreen.classList.remove('active');
+  screen.classList.add('active');
 }
 
-function startTimer(){
-    clearInterval(timerInterval);
-    timeLeft = 30;
+// ========================
+// TIMER
+// ========================
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  updateTimerDisplay();
+
+  timerInterval = setInterval(function() {
+    timeLeft--;
+    totalTime++;
     updateTimerDisplay();
 
-    timerInterval = setInterval(()=>{
-      timeLeft--;
-      totalTime++;
-      updateTimerDisplay();
-
-      if(timeLeft <= 0){
-        clearInterval(timerInterval);
-        timerInterval = null;
-        timeOut();
-      }
-    },1000)
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timeOut();
+    }
+  }, 1000);
 }
 
-function updateTimerDisplay(){
+function updateTimerDisplay() {
   timerEl.textContent = `${timeLeft}s`;
   statTime.textContent = `${timeLeft}s`;
-  timerEl.classList.remove('danger','warning');
-  if(timeLeft <= 5){
+
+  timerEl.classList.remove('warning', 'danger');
+  if (timeLeft <= 10 && timeLeft > 5) {
+    timerEl.classList.add('warning');
+  } else if (timeLeft <= 5) {
     timerEl.classList.add('danger');
   }
-  else if(timeLeft <= 10){
-    timerEl.classList.add('warning');
-  }
-  
 }
 
-function timeOut(){
+function timeOut() {
   wrongAnswers++;
   statWrong.textContent = wrongAnswers;
-   userAnswers.push({
-    question : currentQuestion,
-        selected: -1,
-        correct: false
-    });
-    showFeedback(false,"Time's up! ⏰",questions[currentQuestion].explanation);
-    disableOptions();
-    highLightCorrect();
-    nextBtn.classList.remove('hidden');
+  userAnswers.push({ question: currentQuestion, selected: -1, correct: false });
+  showFeedback(false, "Time's up! ⏰", questions[currentQuestion].explanation);
+  disableOptions();
+  highlightCorrect();
+  nextBtn.classList.remove('hidden');
 }
 
-function renderQuestion(){
-  const q = quetions[currentQuestion];
-  questionCount.textContent = `Question {currentQuestion + 1} of ${questions.length}`
+// ========================
+// RENDER QUESTION
+// ========================
+
+function renderQuestion() {
+  const q = questions[currentQuestion];
+
+  questionCount.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
   statQuestion.textContent = currentQuestion + 1;
   questionText.textContent = q.question;
 
-  progressFill.Style.width = `${currentQuestion}/${questions.length} * 100%`;
+  progressFill.style.width = `${(currentQuestion / questions.length) * 100}%`;
 
-  optionsContainer.innerHTML = "";
+  optionsContainer.innerHTML = '';
   feedback.classList.add('hidden');
   nextBtn.classList.add('hidden');
 
-  q.options.forEach((option,index)=>{
-      const div = document.createElement('div');
-      div.classList.add('option');
-      div.innerHTML =`
+  q.options.forEach(function(option, index) {
+    const div = document.createElement('div');
+    div.classList.add('option');
+    div.innerHTML = `
       <div class="option-letter">${LETTERS[index]}</div>
       <span class="option-text">${option}</span>
       <span class="option-icon">${index === q.correct ? '✓' : '✗'}</span>
-      `
-    div.addEventListener('click', function(){
+    `;
+    div.addEventListener('click', function() {
       selectAnswer(index);
     });
     optionsContainer.appendChild(div);
-  }) ;
-    startTimer();
+  });
+
+  startTimer();
 }
 
-function selectAnswer(selectedIndex){
-      clearInterval(timerInterval);
-      disableOptions();
-      const q = questions[currentQuestion];
-      const isCorrect = selectedIndex === q.correct;
-      const options = document.querySelectorAll('.option');
+// ========================
+// SELECT ANSWER
+// ========================
 
-      if(isCorrect){
-        options[selectedIndex].classList.add('correct');
-        score++;
-        statCorrect.textContent = score;
-        showFeedback(true, '✅ Correct!', q.explanation);
+function selectAnswer(selectedIndex) {
+  clearInterval(timerInterval);
+  disableOptions();
 
-      }else{
-        options[selectedIndex].classList.add('wrong');
-        wrongAnswers++;
-        statWrong.textContent = wrongAnswers;
-        showFeedback(false, '❌ Wrong!', q.explanation)
-      }
+  const q = questions[currentQuestion];
+  const isCorrect = selectedIndex === q.correct;
+  const options = optionsContainer.querySelectorAll('.option');
 
-      userAnswers.push({
-        question: currentQuestion,
-        selected: selectedIndex,
-        correct : isCorrect
-      })
-      nextBtn.classList.remove('hidden');
+  if (isCorrect) {
+    options[selectedIndex].classList.add('correct');
+    score++;
+    statCorrect.textContent = score;
+    showFeedback(true, '✅ Correct!', q.explanation);
+  } else {
+    options[selectedIndex].classList.add('wrong');
+    wrongAnswers++;
+    statWrong.textContent = wrongAnswers;
+    highlightCorrect();
+    showFeedback(false, '❌ Wrong!', q.explanation);
+  }
+
+  userAnswers.push({
+    question: currentQuestion,
+    selected: selectedIndex,
+    correct: isCorrect
+  });
+
+  nextBtn.classList.remove('hidden');
 }
 
-function disableOptions(){
-  optionsContainer.querySelectorAll('.option').forEach((opt)=>{
+function disableOptions() {
+  optionsContainer.querySelectorAll('.option').forEach(function(opt) {
     opt.classList.add('disabled');
-  })
-
+  });
 }
 
-function highlightCorrect(){
+function highlightCorrect() {
   const options = optionsContainer.querySelectorAll('.option');
   options[questions[currentQuestion].correct].classList.add('correct');
 }
-function showFeedback(isCorrect, title, explanation){
-  feedback.classList.remove('correct','strong','wrong');
-  feedback.classList.add(isCorrect? 'correct' : 'wrong');
-  feedback.textContent = `${title} ${explanation}`;
 
+function showFeedback(isCorrect, title, explanation) {
+  feedback.classList.remove('hidden', 'correct', 'wrong');
+  feedback.classList.add(isCorrect ? 'correct' : 'wrong');
+  feedback.textContent = `${title} ${explanation}`;
 }
 
-function nextQuestion(){
-  currentQuestion++;
-  if(currentQuestion >= questions.length ){
-    showResults();
+// ========================
+// NEXT QUESTION
+// ========================
 
-  }
-  else{
+function nextQuestion() {
+  currentQuestion++;
+
+  if (currentQuestion >= questions.length) {
+    showResults();
+  } else {
     renderQuestion();
   }
 }
 
-function showResults(){
+// ========================
+// RESULTS
+// ========================
+
+function showResults() {
   clearInterval(timerInterval);
   showScreen(resultsScreen);
 
-  const percent = Math.round((score/questions.length)*100);
-  const minutes = Math.floor(totalTime/60);
+  const percent = Math.round((score / questions.length) * 100);
+  const minutes = Math.floor(totalTime / 60);
   const seconds = totalTime % 60;
-  const timeString = `${minutes}:${seconds.toString().padStart(2,'0')} `;
+  const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
   document.querySelector('#score-fraction').textContent = `${score}/${questions.length}`;
   document.querySelector('#score-percent').textContent = `${percent}%`;
@@ -270,12 +299,11 @@ function showResults(){
   document.querySelector('#res-wrong').textContent = wrongAnswers;
   document.querySelector('#res-time').textContent = timeString;
 
-
   const gradeBadge = document.querySelector('#grade-badge');
   const resultsEmoji = document.querySelector('#results-emoji');
   const resultsTitle = document.querySelector('#results-title');
 
-    if (percent >= 90) {
+  if (percent >= 90) {
     gradeBadge.textContent = 'A';
     resultsEmoji.textContent = '🏆';
     resultsTitle.textContent = 'Outstanding!';
@@ -296,8 +324,48 @@ function showResults(){
     resultsEmoji.textContent = '📚';
     resultsTitle.textContent = 'Keep Studying!';
   }
-
 }
+
+// ========================
+// REVIEW ANSWERS
+// ========================
+
+function showReview() {
+  reviewSection.classList.remove('hidden');
+  reviewList.innerHTML = '';
+
+  userAnswers.forEach(function(answer) {
+    const q = questions[answer.question];
+    const div = document.createElement('div');
+    div.classList.add('review-item');
+
+    const selectedText = answer.selected === -1
+      ? 'No answer (time out)'
+      : q.options[answer.selected];
+
+    div.innerHTML = `
+      <p>${answer.question + 1}. ${q.question}</p>
+      <span class="review-answer ${answer.correct ? 'correct' : 'wrong'}">
+        ${answer.correct ? '✓' : '✗'} Your answer: ${selectedText}
+      </span>
+      ${!answer.correct
+        ? `<span class="review-answer correct">✓ Correct: ${q.options[q.correct]}</span>`
+        : ''}
+    `;
+    reviewList.appendChild(div);
+  });
+
+  reviewBtn.textContent = 'Hide Review';
+  reviewBtn.onclick = function() {
+    reviewSection.classList.add('hidden');
+    reviewBtn.textContent = 'Review Answers';
+    reviewBtn.onclick = showReview;
+  };
+}
+
+// ========================
+// RESTART
+// ========================
 
 function restartQuiz() {
   currentQuestion = 0;
@@ -313,7 +381,16 @@ function restartQuiz() {
   showScreen(quizScreen);
   renderQuestion();
 }
-startBtn.addEventListener('click',()=>{
-    showScreen(quizScreen);
-   
+
+// ========================
+// EVENT LISTENERS
+// ========================
+
+startBtn.addEventListener('click', function() {
+  showScreen(quizScreen);
+  renderQuestion();
 });
+
+nextBtn.addEventListener('click', nextQuestion);
+restartBtn.addEventListener('click', restartQuiz);
+reviewBtn.addEventListener('click', showReview);
