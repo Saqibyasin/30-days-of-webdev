@@ -124,9 +124,9 @@ body {
     }
 }
 
-/* .hidden {
+.hidden {
   display: none !important;
-} */
+}
 
 .weather-card {
   background-color: var(--surface);
