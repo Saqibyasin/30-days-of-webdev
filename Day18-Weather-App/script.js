@@ -1,4 +1,4 @@
-const API_KEY = "fb223e73ca4baaf305b488babdb7658e";
+const API_KEY = "Hidden just for privacy";
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 const cityInput = document.querySelector('#city-input');
