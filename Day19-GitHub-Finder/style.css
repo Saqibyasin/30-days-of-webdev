@@ -141,6 +141,20 @@ body {
     display: none !important;
 }
 
+.profile-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 16px;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .profile-top {
     display: flex;
     gap: 20px;
@@ -250,10 +264,14 @@ body {
   gap: 12px;
 }
 
-.repos-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+.repo-card {
+  background-color: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
 }
 .repo-card:hover {
   border-color: var(--accent);
